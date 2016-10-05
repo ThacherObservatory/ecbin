@@ -6,6 +6,7 @@ Created on Tue Sep 20 22:24:50 2016
 """
 
 import math
+import numpy as np
 
 #r1 is radius of primary (bigger) star
 #r2 is radius of secondary (smaller) star
@@ -24,15 +25,18 @@ def getImpactParamOcc(a, i, r1, e, argofperi):
     return (a*math.cos(i)/r1)*((1-e**2)/(1-e*math.sin(argofperi))) 
 
 
-def primary_frac_area(r1,r2,b):
+def primary_total_area(r1,r2,b):
     #x = chord length/2
-    x = math.sqrt(abs(r1**2 - (b-r2)**2))
-    coveredArea = ((r1**2)/2)*(2*math.asin(math.radians(x/r1))-math.sin(math.radians(2*math.asin(math.radians(x/r1)))))
-    fracAreaOfCoveredPrimary = coveredArea / (math.pi*r1**2)
-    return fracAreaOfCoveredPrimary
-   
-   
-
-   
-   
+    adjacentSide = (b * r1) - r2
+    theta = (2 * math.acos(adjacentSide / r1))
+    total_area = ((r1 ** 2) / 2) * (theta - math.sin(theta))
+    return total_area
     
+def fractional_area(r1, r2, b, verbose=False):
+    adjacentSide = (b * r1) - r2
+    theta = (2 * math.acos(adjacentSide / r1))
+    total_area = ((r1 ** 2) / 2) * (theta - math.sin(theta))
+    frac_area = 100. * (total_area / (r1 ** 2 * math.pi))
+    if verbose:
+        print("Fractional area covered = %.2f percent" % (frac_area))
+    return frac_area
