@@ -26,8 +26,8 @@ def getImpactParamOcc(a, i, r1, e, argofperi):
 
 def primary_frac_area(r1,r2,b):
     #x = chord length/2
-    x = math.sqrt(r1**2 - (b-r2)**2)
-    coveredArea = ((r1**2)/2)*(2*math.arcsin(x/r1)-math.sin(2*math.arcsin(x/r1)))
+    x = math.sqrt(abs(r1**2 - (b-r2)**2))
+    coveredArea = ((r1**2)/2)*(2*math.asin(math.radians(x/r1))-math.sin(math.radians(2*math.asin(math.radians(x/r1)))))
     fracAreaOfCoveredPrimary = coveredArea / (math.pi*r1**2)
     return fracAreaOfCoveredPrimary
    
