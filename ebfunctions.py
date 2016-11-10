@@ -15,6 +15,21 @@ import numpy as np
 #A = (r1^2/2)(theta-sintheta)
 # theta = angle of circular segment
 
+def markovChain(data, stepSize = .01,nSteps = 10000, C0 = 5):
+    cvec = []
+    lnlike = []
+    for i in range(nSteps):
+        L0 = lnLike(C0,data)
+        cnew = C0 + random
+        Lnew = lnLike(cnew,data)
+        if Lnew > L0:
+            #metropolis hasting?
+    
+def lnLike(c,d):
+    #some sum goes here
+
+
+
 def getImpactParamTra(a, i, r1, e, argofperi):
     i = math.radians(i)
     return (a*math.cos(i)/r1)*((1-e**2)/(1+e*math.sin(argofperi)))
