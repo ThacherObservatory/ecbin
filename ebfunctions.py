@@ -8,26 +8,36 @@ Created on Tue Sep 20 22:24:50 2016
 import math
 import numpy as np
 
+
+
+def markovChain(data = np.random.normal(5,s,100), plotDataError = False, stepSize = .01,nSteps = 10000, C0 = 5):
+    if plotDataError:
+        plt.errorbar(np.arrange(len(y)),data,yerr= np.ones(len(x)), font ='o', color = 'black')
+    
+    cvec = []
+    lnlike = []
+    
+    q = 1/(Math.sqrt(2*Math.pi)*s)*math.e**(-())
+    
+    for i in range(nSteps):
+        L0 = lnLike(C0,data)
+        cnew = C0 + random
+        Lnew = lnLike(cnew,data)
+        if Lnew < L0:
+            #acceptance probability: metropolis hasting
+            
+    
+def lnLike(x,d,sigma):
+    #x is a constant, d is an array, sigma is an array; returns p(D|m)
+    return np.sum(-(x-d)**2/(2*sigma**2))
+
+
 #r1 is radius of primary (bigger) star
 #r2 is radius of secondary (smaller) star
 #b is impact parameter (projected distance b/w their centers)
 #area of chord tangent to bottom of smaller star
 #A = (r1^2/2)(theta-sintheta)
 # theta = angle of circular segment
-
-def markovChain(data, stepSize = .01,nSteps = 10000, C0 = 5):
-    cvec = []
-    lnlike = []
-    for i in range(nSteps):
-        L0 = lnLike(C0,data)
-        cnew = C0 + random
-        Lnew = lnLike(cnew,data)
-        if Lnew > L0:
-            #metropolis hasting?
-    
-def lnLike(c,d):
-    #some sum goes here
-
 
 
 def getImpactParamTra(a, i, r1, e, argofperi):
