@@ -60,9 +60,12 @@ def markovChain(c0 = 10, mean = 5, sigma = 1, nPts = 100,burnMax = 10000,
     plt.clf()    
     plt.errorbar(np.arange(len(data)),data,yerr=np.ones(len(data)),fmt='o')
     
+    
     plt.figure(4)
     plt.clf()
     plt.hist(cfinal,bins=100)
+    plt.xlabel("Mean Value")
+    plt.ylabel("Frequency")
     
     return cfinal
         
