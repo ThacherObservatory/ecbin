@@ -5,31 +5,74 @@ Created on Tue Sep 20 22:24:50 2016
 @author: Yousef L, Katie O'Neill, Jeffrey Ding, Joe Hardewicke, Jon Swift
 """
 
-import math
+import math,pdb
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 
-def markovChain(data = np.random.normal(5,s,100), plotDataError = False, stepSize = .01,nSteps = 10000, C0 = 5):
-    if plotDataError:
-        plt.errorbar(np.arrange(len(y)),data,yerr= np.ones(len(x)), font ='o', color = 'black')
+def markovChain(c0 = 10, mean = 5, sigma = 1, nPts = 100,burnMax = 10000, 
+                plotDataError = False, stepSize = .1,nSteps = 20000):
+   # if plotDataError:
+      #  plt.errorbar(np.arrange(len(y)),data,yerr= np.ones(len(x)), font ='o', color = 'black')
     
-    cvec = []
-    lnlike = []
+    data = np.random.normal(mean,sigma,nPts)
+    l0 = lnLike(c0, data,sigma)
+    cvec = np.array([c0])
+    lnlike = np.array([l0])
+    burnCounter = 0
     
-    q = 1/(Math.sqrt(2*Math.pi)*s)*math.e**(-())
-    
+    cfinal = []
     for i in range(nSteps):
-        L0 = lnLike(C0,data)
-        cnew = C0 + random
-        Lnew = lnLike(cnew,data)
-        if Lnew < L0:
-            #acceptance probability: metropolis hasting
+        #if i % 2000 == 0:        
+            #pdb.set_trace() 
+        cprev = cvec[-1]
+        lprev = lnLike(cprev,data,sigma)
+       
+        random = np.random.normal(0,stepSize)
+        ccur = cprev + random
+        lcur = lnLike(ccur,data,sigma)
+
+        if lcur < lprev:
+            lnratio = lcur - lprev
+            ratio = np.exp(lnratio)
+            prop = np.random.uniform(0,1)
+            if ratio > prop:
+                cvec = np.append(cvec,ccur)
+                lnlike = np.append(lnlike,lcur)
+                if burnCounter > burnMax:
+                    cfinal = np.append(cfinal,ccur)
+            else: 
+                cvec = np.append(cvec,cprev)
+                lnlike = np.append(lnlike,lprev)
+                if burnCounter > burnMax:
+                    cfinal = np.append(cfinal,cprev)
+        else:
+            cvec = np.append(cvec,ccur)
+            lnlike = np.append(lnlike,lcur)            
+            if burnCounter > burnMax:
+                cfinal = np.append(cfinal,ccur)
+            
+        burnCounter = burnCounter + 1
+            
+    plt.ion()
+    plt.figure(3)
+    plt.clf()    
+    plt.errorbar(np.arange(len(data)),data,yerr=np.ones(len(data)),fmt='o')
+    
+    plt.figure(4)
+    plt.clf()
+    plt.hist(cfinal,bins=100)
+    
+    return cfinal
+        
             
     
-def lnLike(x,d,sigma):
+def lnLike(x,data,sigma):
     #x is a constant, d is an array, sigma is an array; returns p(D|m)
-    return np.sum(-(x-d)**2/(2*sigma**2))
+    return np.sum(-1*(x-data)**2/(2*sigma**2))
+
+#def like()
 
 
 #r1 is radius of primary (bigger) star
