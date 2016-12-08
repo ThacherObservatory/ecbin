@@ -3,17 +3,34 @@
 """
 Created on Thu Dec  8 13:59:12 2016
 
-@author: ONeill
+@author: Ding
 """
 
 from __future__ import print_function
 import numpy as np
 import emcee
 
-def readData():
+def run():
+    read_data()
+    ndim, nwalkers = 3, 100
+    pos = [result["x"] + 1e-4*np.random.randn(ndim) for i in range(nwalkers)]
+    sampler = emcee.EnsembleSampler(nwalkers, ndim, lnprob, args=(x, y, yerr))
+    sampler.run_mcmc(pos, 500)
+    samples = sampler.chain[:, 50:, :].reshape((-1, ndim))
+    import corner
+    fig = corner.corner(samples, labels=["$m$", "$b$", "$\ln\,f$"],truths=[m_true, b_true, np.log(f_true)])
+    fig.savefig("triangle.png")
+    
+          
+    
+
+def read_data():
     #read files
-    f = open()
-    data_dict = {"RV1" : }
+    time1, rv1, rv1error = np.loadtxt("Data_large.txt", unpack=True)
+    time2, rv2, rv2error = np.loadtxt("Data_small.txt", unpack=True)
+
+    data_dict = {"TimeOne" : time1, "rv1" : rv1, "rv1error": rv1error, "TimeTwo": time2, "rv2": rv2, "rv2error": rv2error}
+    return data_dict
 
 def lnlike(params, data_dictionary):
     rvModel = get_model_rv(t, params)
