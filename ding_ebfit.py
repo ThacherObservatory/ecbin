@@ -9,6 +9,19 @@ Created on Thu Dec  8 13:59:12 2016
 from __future__ import print_function
 import numpy as np
 import emcee
+import occultquad as oq
+import scipy as sp
+import matplotlib.pyplot as plt
+import robust as rb
+import sys
+import math
+from scipy.ndimage.filters import uniform_filter
+from mpl_toolkits.mplot3d import Axes3D
+import time
+import constants as c
+import os
+import pdb
+from PyAstronomy import pyasl
 
 def run():
     read_data()
@@ -21,9 +34,6 @@ def run():
     fig = corner.corner(samples, labels=["$m$", "$b$", "$\ln\,f$"],truths=[m_true, b_true, np.log(f_true)])
     fig.savefig("triangle.png")
     
-          
-    
-
 def read_data():
     #read files
     time1, rv1, rv1error = np.loadtxt("Data_large.txt", unpack=True)
@@ -38,23 +48,6 @@ def lnlike(params, data_dictionary):
     
 
 def get_model_rv(t,params=False):
-    import numpy as np
-    import emcee
-    import occultquad as oq
-    import scipy as sp
-    import matplotlib.pyplot as plt
-    import robust as rb
-    import sys
-    import math
-    from scipy.ndimage.filters import uniform_filter
-    from mpl_toolkits.mplot3d import Axes3D
-    import time
-    import constants as c
-    import os
-    import pdb
-    from PyAstronomy import pyasl
-
-
 #    if len(params) == 9:
 #    p = np.double(params)
 #    else:
