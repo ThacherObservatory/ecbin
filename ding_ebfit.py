@@ -7,19 +7,29 @@ Created on Thu Dec  8 13:59:12 2016
 """
 
 from __future__ import print_function
+import matplotlib.pyplot as plt
 import numpy as np
 import emcee
 
 def run():
-    read_data()
-    ndim, nwalkers = 3, 100
-    pos = [result["x"] + 1e-4*np.random.randn(ndim) for i in range(nwalkers)]
-    sampler = emcee.EnsembleSampler(nwalkers, ndim, lnprob, args=(x, y, yerr))
-    sampler.run_mcmc(pos, 500)
-    samples = sampler.chain[:, 50:, :].reshape((-1, ndim))
-    import corner
-    fig = corner.corner(samples, labels=["$m$", "$b$", "$\ln\,f$"],truths=[m_true, b_true, np.log(f_true)])
-    fig.savefig("triangle.png")
+    data_dict = read_data() #read real data
+    ndim= 8
+    nwalkers = 250
+    p0 = np.random.rand(ndim * nwalkers).reshape((nwalkers, ndim)) #random locations for 250 walkers in 8 dimension
+           
+    sampler = emcee.EnsembleSampler(nwalkers, ndim, lnlike, args = [data_dict]) #instantiate emcee 
+    
+    pos, prob, state = sampler.run_mcmc(p0, 100) #burn-in
+    sampler.reset()
+
+    sampler.run_mcmc(pos, 1000)
+    #samples = sampler.chain[:, 50:, :].reshape((-1, ndim))
+    
+    for i in range(ndim):
+        plt.figure()
+        plt.hist(sampler.flatchain[:,i], 100, color="k", histtype="step")
+        plt.title("Dimension {0:d}".format(i))
+        plt.show()
     
           
     
@@ -33,25 +43,25 @@ def read_data():
     return data_dict
 
 def lnlike(params, data_dictionary):
-    rvModel = get_model_rv(t, params)
-    return -np.sum(((rvModel - rvActual) ** 2) / (2 * (error ** 2)))
+    #for test purposes, we are modelling only one star right now
+    rvModel = get_model_rv(data_dictionary["TimeOne"], params) 
+    return -np.sum(((rvModel - data_dictionary["v1"]) ** 2) / (2 * (data_dictionary["rv1error"] ** 2)))
     
 
 def get_model_rv(t,params=False):
     import numpy as np
-    import emcee
-    import occultquad as oq
-    import scipy as sp
-    import matplotlib.pyplot as plt
-    import robust as rb
-    import sys
-    import math
-    from scipy.ndimage.filters import uniform_filter
-    from mpl_toolkits.mplot3d import Axes3D
-    import time
+    #import occultquad as oq
+    #import scipy as sp
+    #import matplotlib.pyplot as plt
+    #import robust as rb
+    #import sys
+    #import math
+    #from scipy.ndimage.filters import uniform_filter
+    #from mpl_toolkits.mplot3d import Axes3D
+    #import time
     import constants as c
-    import os
-    import pdb
+    #import os
+    #import pdb
     from PyAstronomy import pyasl
 
 
@@ -60,7 +70,7 @@ def get_model_rv(t,params=False):
 #    else:
 #    p = p0
     p = params
-#        period = p[0] * 24.0 * 3600.0
+    period = p[0] * 24.0 * 3600.0
     per    = period * 24.0 * 3600.0
     M1     = p[0] * c.Msun
     M2     = p[1] * c.Msun
