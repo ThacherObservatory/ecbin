@@ -59,3 +59,5 @@ target/
 
 # macOS
 .DS_Store
+
+desktop\.ini
